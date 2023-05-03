@@ -738,6 +738,16 @@
         /// <returns>The requested text if present</returns>
         public string GetText(int startColumn, int startRow, int endColumn, int endRow)
         {
+            if (startColumn < 0)
+            {
+                startColumn = 0;
+            }
+
+            if (startRow < 0)
+            {
+                startRow = 0;
+            }
+
             if (startRow > endRow || (startRow == endRow && startColumn > endColumn))
             {
                 var holder = startColumn;
