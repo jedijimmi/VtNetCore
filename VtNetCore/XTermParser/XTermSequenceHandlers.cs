@@ -668,6 +668,19 @@
                         else
                             System.Diagnostics.Debug.WriteLine("SGR " + csiSequence.Parameters[0].ToString() + " must be longer than 1 option");
                     }
+                    else if (csiSequence.Parameters.Count == 6 && csiSequence.Parameters[1] == 38)
+                    {
+                        controller.SetCharacterAttribute(csiSequence.Parameters[0]);
+                        controller.SetCharacterAttribute(csiSequence.Parameters[2]);
+                        controller.SetRgbForegroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
+                    }
+                    else if (csiSequence.Parameters.Count == 11 && csiSequence.Parameters[1] == 38 && csiSequence.Parameters[6] == 48)
+                    {
+                        controller.SetCharacterAttribute(csiSequence.Parameters[0]);
+                        controller.SetCharacterAttribute(csiSequence.Parameters[2]);
+                        controller.SetRgbForegroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
+                        controller.SetRgbBackgroundColor(csiSequence.Parameters[8], csiSequence.Parameters[9], csiSequence.Parameters[10]);
+                    }
                     else
                     {
                         foreach(var parameter in csiSequence.Parameters)
