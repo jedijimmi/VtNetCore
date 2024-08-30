@@ -58,6 +58,22 @@ namespace VtNetCore.VirtualTerminal.Model
 
         public static readonly Dictionary<int, TerminalColor> Iso8613 = new Dictionary<int, TerminalColor>
         {
+            {  0, new TerminalColor("#000000") },  // 
+            {  1, new TerminalColor("#800000") },  // 
+            {  2, new TerminalColor("#008000") },  // 
+            {  3, new TerminalColor("#808000") },  // 
+            {  4, new TerminalColor("#000080") },  // 
+            {  5, new TerminalColor("#000080") },  // 
+            {  6, new TerminalColor("#008080") },  // 
+            {  7, new TerminalColor("#c0c0c0") },  // 
+            {  8, new TerminalColor("#808080") },  // 
+            {  9, new TerminalColor("#ff0000") },  // 
+            {  10, new TerminalColor("#00ff00") }, // 
+            {  11, new TerminalColor("#ffff00") }, // 
+            {  12, new TerminalColor("#0000ff") }, // 
+            {  13, new TerminalColor("#ff00ff") }, // 
+            {  14, new TerminalColor("#00ffff") }, // 
+            {  15, new TerminalColor("#ffffff") }, // 
             {  16, new TerminalColor("#000000") }, // Grey0
             {  17, new TerminalColor("#00005f") }, // NavyBlue
             {  18, new TerminalColor("#000087") }, // DarkBlue
