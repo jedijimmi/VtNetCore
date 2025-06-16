@@ -660,53 +660,51 @@ namespace VtNetCore.XTermParser
                 Handler = (sequence, controller) =>
                 {
                     var csiSequence = sequence as CsiSequence;
-                    if(csiSequence.Parameters.Count == 0)
-                        controller.SetCharacterAttribute(0);
-                    else if(csiSequence.Parameters[0] == 38 || csiSequence.Parameters[0] == 48)
+                    var parameters = csiSequence.Parameters;
+                    if (parameters.Count == 0)
                     {
-                        if(csiSequence.Parameters.Count == 6 && csiSequence.Parameters[1] == 2)
+                        controller.SetCharacterAttribute(0);
+                        return;
+                    }
+
+                    while (parameters.Count > 0)
+                    {
+                        if (parameters[0] == 38 || parameters[0] == 48)
                         {
-                            // XTerm iRGB
-                            if(csiSequence.Parameters[0] == 38)
-                                controller.SetRgbForegroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
+                            if (parameters[1] == 2)
+                            {
+                                if (parameters[0] == 38)
+                                {
+                                    controller.SetRgbForegroundColor(parameters[2],
+                                        parameters[3], parameters[4]);
+                                }
+                                else
+                                {
+                                    controller.SetRgbBackgroundColor(parameters[2],
+                                        parameters[3], parameters[4]);
+                                }
+                                parameters.RemoveRange(0, 5);
+                            }
+                            else if (parameters[1] == 5)
+                            {
+                                if (parameters[0] == 38)
+                                    controller.SetIso8613PaletteForeground(parameters[2]);
+                                else
+                                    controller.SetIso8613PaletteBackground(parameters[2]);
+                                parameters.RemoveRange(0, 3);
+                            }
                             else
-                                controller.SetRgbBackgroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
-                        }
-                        else if(csiSequence.Parameters.Count == 5 && csiSequence.Parameters[1] == 2)
-                        {
-                            // Konsole RGB
-                            if(csiSequence.Parameters[0] == 38)
-                                controller.SetRgbForegroundColor(csiSequence.Parameters[2], csiSequence.Parameters[3], csiSequence.Parameters[4]);
-                            else
-                                controller.SetRgbBackgroundColor(csiSequence.Parameters[2], csiSequence.Parameters[3], csiSequence.Parameters[4]);
-                        }
-                        else if(csiSequence.Parameters.Count == 3 && csiSequence.Parameters[1] == 5)
-                        {
-                            if(csiSequence.Parameters[0] == 38)
-                                controller.SetIso8613PaletteForeground(csiSequence.Parameters[2]);
-                            else
-                                controller.SetIso8613PaletteBackground(csiSequence.Parameters[2]);
+                            {
+                                System.Diagnostics.Debug.WriteLine("SGR " + parameters[0].ToString() +
+                                                                " must be longer than 1 option");
+                                parameters.RemoveRange(0, 1);
+                            }
                         }
                         else
-                            System.Diagnostics.Debug.WriteLine("SGR " + csiSequence.Parameters[0].ToString() + " must be longer than 1 option");
-                    }
-                    else if (csiSequence.Parameters.Count == 6 && csiSequence.Parameters[1] == 38)
-                    {
-                        controller.SetCharacterAttribute(csiSequence.Parameters[0]);
-                        controller.SetCharacterAttribute(csiSequence.Parameters[2]);
-                        controller.SetRgbForegroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
-                    }
-                    else if (csiSequence.Parameters.Count == 11 && csiSequence.Parameters[1] == 38 && csiSequence.Parameters[6] == 48)
-                    {
-                        controller.SetCharacterAttribute(csiSequence.Parameters[0]);
-                        controller.SetCharacterAttribute(csiSequence.Parameters[2]);
-                        controller.SetRgbForegroundColor(csiSequence.Parameters[3], csiSequence.Parameters[4], csiSequence.Parameters[5]);
-                        controller.SetRgbBackgroundColor(csiSequence.Parameters[8], csiSequence.Parameters[9], csiSequence.Parameters[10]);
-                    }
-                    else
-                    {
-                        foreach(var parameter in csiSequence.Parameters)
-                            controller.SetCharacterAttribute(parameter);
+                        {
+                            controller.SetCharacterAttribute(parameters[0]);
+                            parameters.RemoveRange(0, 1);
+                        }
                     }
                 }
             },
