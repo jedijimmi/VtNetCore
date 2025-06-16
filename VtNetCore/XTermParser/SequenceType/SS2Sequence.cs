@@ -1,6 +1,6 @@
 ﻿namespace VtNetCore.XTermParser.SequenceType
 {
-    class SS2Sequence : TerminalSequence
+    internal class SS2Sequence : TerminalSequence
     {
         public override string ToString()
         {

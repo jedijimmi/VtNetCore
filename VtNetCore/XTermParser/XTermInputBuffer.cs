@@ -1,23 +1,11 @@
-﻿namespace VtNetCore.XTermParser
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace VtNetCore.XTermParser
+{
     public class XTermInputBuffer
     {
-        public byte [] Buffer { get; private set; }
-
-        private class StreamState
-        {
-            public int Position { get; set; }
-            public EMode Mode { get; set; }
-        }
-
-        private List<StreamState> StateStack { get; set; } = new List<StreamState>();
-
-        public int Position { get; set; } = 0;
-
         public enum EMode
         {
             Raw,
@@ -25,11 +13,17 @@
             USASCII,
             C0,
             UK
-        };
+        }
+
+        public byte[] Buffer { get; private set; }
+
+        private List<StreamState> StateStack { get; } = new List<StreamState>();
+
+        public int Position { get; set; }
 
         public EMode Mode { get; set; } = EMode.UTF8;
 
-        public byte [] Stacked
+        public byte[] Stacked
         {
             get
             {
@@ -38,7 +32,11 @@
             }
         }
 
-        public void Add(byte [] data)
+        public bool AtEnd => Buffer == null ? true : Position >= Buffer.Length;
+
+        public int Remaining => Buffer == null ? 0 : Buffer.Length - Position;
+
+        public void Add(byte[] data)
         {
             if (Buffer == null)
                 Buffer = data;
@@ -111,22 +109,6 @@
             Position = 0;
         }
 
-        public bool AtEnd
-        {
-            get
-            {
-                return Buffer == null ? true : (Position >= Buffer.Length);
-            }
-        }
-
-        public int Remaining
-        {
-            get
-            {
-                return Buffer == null ? 0 : (Buffer.Length - Position);
-            }
-        }
-
         public byte PeekAhead(int skip)
         {
             if (skip >= Remaining)
@@ -135,9 +117,9 @@
             return Buffer[Position + skip];
         }
 
-        public char Read(bool utf8=false)
+        public char Read(bool utf8 = false)
         {
-            if(utf8)
+            if (utf8)
                 return ReadUtf8();
             return ReadRaw();
         }
@@ -174,8 +156,8 @@
                 int third = PeekAhead(2);
 
                 if (
-                    ((second & 0xC0) == 0x80) &&
-                    ((third & 0xC0) == 0x80)
+                    (second & 0xC0) == 0x80 &&
+                    (third & 0xC0) == 0x80
                 )
                 {
                     Position += 3;
@@ -190,17 +172,24 @@
                 int fourth = PeekAhead(3);
 
                 if (
-                    ((second & 0xC0) == 0x80) &&
-                    ((third & 0xC0) == 0x80) &&
-                    ((fourth & 0xC0) == 0x80)
+                    (second & 0xC0) == 0x80 &&
+                    (third & 0xC0) == 0x80 &&
+                    (fourth & 0xC0) == 0x80
                 )
                 {
                     Position += 4;
-                    return (char)(((first & 0x1F) << 18) | ((second & 0x3F) << 12) | ((third & 0x3F) << 6) | (fourth & 0x3F));
+                    return (char)(((first & 0x1F) << 18) | ((second & 0x3F) << 12) | ((third & 0x3F) << 6) |
+                                  (fourth & 0x3F));
                 }
             }
 
             throw new ArgumentException("The incoming data is not a proper UTF-8 character");
+        }
+
+        private class StreamState
+        {
+            public int Position { get; set; }
+            public EMode Mode { get; set; }
         }
     }
 }

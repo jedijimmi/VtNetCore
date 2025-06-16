@@ -1,21 +1,20 @@
-﻿namespace VtNetCore.VirtualTerminal
-{
-    using VtNetCore.VirtualTerminal.Enums;
-    using VtNetCore.XTermParser;
+﻿using VtNetCore.VirtualTerminal.Enums;
 
+namespace VtNetCore.VirtualTerminal
+{
     /// <summary>
-    /// Provides the interfaces needed by a terminal in order to manipulate the model.
+    ///     Provides the interfaces needed by a terminal in order to manipulate the model.
     /// </summary>
     public interface IVirtualTerminalController
     {
-
         /// <summary>
-        /// Clears the change tracking of the model.
+        ///     Clears the change tracking of the model.
         /// </summary>
         /// <remarks>
-        /// This is not really well placed here.
+        ///     This is not really well placed here.
         /// </remarks>
         void ClearChanges();
+
         bool IsUtf8();
         bool IsVt52Mode();
 

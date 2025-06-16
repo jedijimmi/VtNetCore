@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using VtNetCore.VirtualTerminal.Enums;
 
 namespace VtNetCore.VirtualTerminal.Encodings
 {
     public static class Iso2022Encoding
     {
-        public static readonly Dictionary<Char, Char> C0 = new Dictionary<char, char>
+        public static readonly Dictionary<char, char> C0 = new Dictionary<char, char>
         {
-            { '_', ' ' },      // 5/9 - Blank
+            { '_', ' ' }, // 5/9 - Blank
             { '`', '\u25C6' }, // 6/0 - U+25C6 # BLACK DIAMOND
             { 'a', '\u2592' }, // 6/1 - U+2592 # MEDIUM SHADE (checkerboard)
             { 'b', '\u2409' }, // 6/2 - U+2409 # SYMBOL FOR HORIZONTAL TAB
@@ -40,12 +38,12 @@ namespace VtNetCore.VirtualTerminal.Encodings
             { '{', '\u03C0' }, // 7/11 - U+03C0 # GREEK SMALL LETTER PI
             { '|', '\u2260' }, // 7/12 - U+2260 # NOT EQUAL TO
             { '}', '\u00A3' }, // 7/13 - U+00A3 # POUND SIGN
-            { '~', '\u00B7' }, // 7/14 - U+00B7 # MIDDLE DOT
+            { '~', '\u00B7' } // 7/14 - U+00B7 # MIDDLE DOT
         };
 
         public static char DecodeChar(char inChar, ECharacterSet characterSet)
         {
-            switch(characterSet)
+            switch (characterSet)
             {
                 case ECharacterSet.UK:
                     if (inChar == '#')
@@ -53,7 +51,7 @@ namespace VtNetCore.VirtualTerminal.Encodings
                     return inChar;
 
                 case ECharacterSet.C0:
-                    if (C0.TryGetValue(inChar, out char c0Value))
+                    if (C0.TryGetValue(inChar, out var c0Value))
                         return c0Value;
                     return inChar;
 

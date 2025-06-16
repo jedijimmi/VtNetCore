@@ -1,6 +1,6 @@
 ﻿namespace VtNetCore.VirtualTerminal.Enums
 {
-    public enum ETerminalColor : int
+    public enum ETerminalColor
     {
         Black = 0,
         Red = 1,

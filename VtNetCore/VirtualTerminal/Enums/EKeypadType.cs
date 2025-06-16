@@ -3,6 +3,6 @@
     public enum EKeypadType
     {
         Normal,
-        Application,
+        Application
     }
 }

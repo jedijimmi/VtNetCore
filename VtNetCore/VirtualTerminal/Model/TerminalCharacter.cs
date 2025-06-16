@@ -1,27 +1,27 @@
 ﻿namespace VtNetCore.VirtualTerminal.Model
 {
     /// <summary>
-    /// Represents a single character and its attributes
+    ///     Represents a single character and its attributes
     /// </summary>
     public class TerminalCharacter
     {
         /// <summary>
-        /// The character to display
+        ///     The character to display
         /// </summary>
         public char Char { get; set; } = ' ';
 
         /// <summary>
-        /// Specifies the lower portion of a combining character
+        ///     Specifies the lower portion of a combining character
         /// </summary>
         public string CombiningCharacters { get; set; }
 
         /// <summary>
-        /// The attributes to apply to the character
+        ///     The attributes to apply to the character
         /// </summary>
         public TerminalAttribute Attributes { get; set; } = new TerminalAttribute();
 
         /// <summary>
-        /// Deep copy/clone
+        ///     Deep copy/clone
         /// </summary>
         /// <returns>A deep copy of this object</returns>
         /// TODO : Implement ICloneable

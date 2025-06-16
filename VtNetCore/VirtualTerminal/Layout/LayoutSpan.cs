@@ -1,9 +1,5 @@
 ﻿namespace VtNetCore.VirtualTerminal.Layout
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public class LayoutSpan
     {
         public string Text { get; set; }

@@ -1,57 +1,32 @@
-﻿namespace VtNetCore.VirtualTerminal
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using VtNetCore.VirtualTerminal.Enums;
-    using VtNetCore.VirtualTerminal.Model;
+﻿using System.Collections.Generic;
+using System.Linq;
+using VtNetCore.VirtualTerminal.Enums;
+using VtNetCore.VirtualTerminal.Model;
 
+namespace VtNetCore.VirtualTerminal
+{
     /// <summary>
-    /// The current cursor state as known by the controller
+    ///     The current cursor state as known by the controller
     /// </summary>
     public class TerminalCursorState
     {
         /// <summary>
-        ///  The current column of the cursor.
+        ///     Specifies whether the terminal should auto insert or replace text on the screen.
         /// </summary>
-        public int CurrentColumn { get; set; } = 0;
+        public EInsertReplaceMode InsertMode = EInsertReplaceMode.Replace;
 
         /// <summary>
-        /// The current row of the cursor relative to the top of the visible screen, not the buffer.
+        ///     Specifies whether the coordinate system is relative to the currently configured scrolling region
         /// </summary>
-        public int CurrentRow { get; set; } = 0;
-
-        public TextPosition Position {
-            get { return new TextPosition { Column = CurrentColumn, Row = CurrentRow }; }
-            set { CurrentColumn = value.Column; CurrentRow = value.Row; }
-        }
+        public bool OriginMode;
 
         /// <summary>
-        /// Set to true when in application mode
+        ///     Set to true if the entire screen should invert foreground and background colors
         /// </summary>
-        public bool ApplicationCursorKeysMode { get; set; } = false;
+        public bool ReverseVideoMode;
 
         /// <summary>
-        /// The current drawing attribute for text.
-        /// </summary>
-        public TerminalAttribute Attributes { get; set; } = new TerminalAttribute();
-
-        /// <summary>
-        /// Specifies whether to show the text cursor
-        /// </summary>
-        public bool ShowCursor { get; set; } = true;
-
-        /// <summary>
-        /// Specifies whether the text cursor should be blinking
-        /// </summary>
-        public bool BlinkingCursor { get; set; } = true;
-
-        /// <summary>
-        /// Defines the shape of the cursor
-        /// </summary>
-        public ECursorShape CursorShape { get; set; } = ECursorShape.Block;
-
-        /// <summary>
-        /// The currently configured tab stops (in base 1)
+        ///     The currently configured tab stops (in base 1)
         /// </summary>
         public List<int> TabStops = new List<int>
         {
@@ -59,97 +34,127 @@
         };
 
         /// <summary>
-        /// Specifies true if automatic word wrap should be employed.
+        ///     Specifies true if automatic word wrap should be employed.
         /// </summary>
         public bool WordWrap = true;
 
         /// <summary>
-        /// Set to true if the entire screen should invert foreground and background colors
+        ///     The current column of the cursor.
         /// </summary>
-        public bool ReverseVideoMode = false;
+        public int CurrentColumn { get; set; }
 
         /// <summary>
-        /// Specifies whether the coordinate system is relative to the currently configured scrolling region
+        ///     The current row of the cursor relative to the top of the visible screen, not the buffer.
         /// </summary>
-        public bool OriginMode = false;
+        public int CurrentRow { get; set; }
+
+        public TextPosition Position
+        {
+            get => new TextPosition { Column = CurrentColumn, Row = CurrentRow };
+            set
+            {
+                CurrentColumn = value.Column;
+                CurrentRow = value.Row;
+            }
+        }
 
         /// <summary>
-        /// Specifies whether the terminal should auto insert or replace text on the screen.
+        ///     Set to true when in application mode
         /// </summary>
-        public EInsertReplaceMode InsertMode = EInsertReplaceMode.Replace;
+        public bool ApplicationCursorKeysMode { get; set; }
 
         /// <summary>
-        /// Flags whether the current character set is meant to be read as Utf8
+        ///     The current drawing attribute for text.
+        /// </summary>
+        public TerminalAttribute Attributes { get; set; } = new TerminalAttribute();
+
+        /// <summary>
+        ///     Specifies whether to show the text cursor
+        /// </summary>
+        public bool ShowCursor { get; set; } = true;
+
+        /// <summary>
+        ///     Specifies whether the text cursor should be blinking
+        /// </summary>
+        public bool BlinkingCursor { get; set; } = true;
+
+        /// <summary>
+        ///     Defines the shape of the cursor
+        /// </summary>
+        public ECursorShape CursorShape { get; set; } = ECursorShape.Block;
+
+        /// <summary>
+        ///     Flags whether the current character set is meant to be read as Utf8
         /// </summary>
         public bool Utf8 { get; set; } = true;
 
         /// <summary>
-        /// Specifies the active character mode for the L region
+        ///     Specifies the active character mode for the L region
         /// </summary>
         public ECharacterSetMode CharacterSetMode { get; set; } = ECharacterSetMode.IsoG0;
 
         /// <summary>
-        /// Specifies the active character mode for the R region
+        ///     Specifies the active character mode for the R region
         /// </summary>
         public ECharacterSetMode CharacterSetModeR { get; set; } = ECharacterSetMode.IsoG0;
 
         /// <summary>
-        /// The configured character set for the G0 page
+        ///     The configured character set for the G0 page
         /// </summary>
         public ECharacterSet G0 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the G1 page
+        ///     The configured character set for the G1 page
         /// </summary>
         public ECharacterSet G1 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the G2 page
+        ///     The configured character set for the G2 page
         /// </summary>
         public ECharacterSet G2 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the G3 page
+        ///     The configured character set for the G3 page
         /// </summary>
         public ECharacterSet G3 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the Vt300 G1 page
+        ///     The configured character set for the Vt300 G1 page
         /// </summary>
         public ECharacterSet Vt300G1 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the Vt300 G2 page
+        ///     The configured character set for the Vt300 G2 page
         /// </summary>
         public ECharacterSet Vt300G2 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// The configured character set for the Vt300 G3 page
+        ///     The configured character set for the Vt300 G3 page
         /// </summary>
         public ECharacterSet Vt300G3 { get; set; } = ECharacterSet.USASCII;
 
         /// <summary>
-        /// Sets the VT-52 alternate keypad mode
+        ///     Sets the VT-52 alternate keypad mode
         /// </summary>
         public bool Vt52AlternateKeypad { get; set; }
 
         /// <summary>
-        /// Sets the VT-52 graphics mode
+        ///     Sets the VT-52 graphics mode
         /// </summary>
         public bool Vt52GraphicsMode { get; set; }
 
         /// <summary>
-        /// Specifies whether LF should assume CR
+        ///     Specifies whether LF should assume CR
         /// </summary>
         public bool AutomaticNewLine { get; set; }
 
         /// <summary>
-        /// The number of columns configured by the server
+        ///     The number of columns configured by the server
         /// </summary>
         public int ConfiguredColumns { get; set; }
 
         /// <summary>
-        /// Deep copy
+        ///     Deep copy
         /// </summary>
         /// <returns>A deep copy of the state</returns>
         public TerminalCursorState Clone()
@@ -185,37 +190,37 @@
         }
 
         /// <summary>
-        /// Creates a debug string for spamming the display with too much information
+        ///     Creates a debug string for spamming the display with too much information
         /// </summary>
         /// <returns>A formatted debug string</returns>
         public override string ToString()
         {
             return
-                "CurrentColumn: " + CurrentColumn.ToString() + "\n" +
-                "CurrentRow:" + CurrentRow.ToString() + "\n" +
-                "ApplicationCursorKeysMode:" + ApplicationCursorKeysMode.ToString() + "\n" +
-                "Attribute:\n" + Attributes.ToString() + "\n" +
+                "CurrentColumn: " + CurrentColumn + "\n" +
+                "CurrentRow:" + CurrentRow + "\n" +
+                "ApplicationCursorKeysMode:" + ApplicationCursorKeysMode + "\n" +
+                "Attribute:\n" + Attributes + "\n" +
                 "TabStops:" + string.Join(",", TabStops.Select(x => x.ToString()).ToList()) + "\n" +
-                "WordWrap:" + WordWrap.ToString() + "\n" +
-                "ReverseVideoMode:" + ReverseVideoMode.ToString() + "\n" +
-                "OriginMode:" + OriginMode.ToString() + "\n" +
-                "InsertMode:" + InsertMode.ToString() + "\n" +
-                "ShowCursor:" + ShowCursor.ToString() + "\n" +
-                "BlinkingCursor:" + BlinkingCursor.ToString() + "\n" +
-                "CursorShape:" + CursorShape.ToString() + "\n" + 
-                "Utf8:" + Utf8.ToString() + "\n" +
-                "CharacterSetMode:" + CharacterSetMode.ToString() + "\n" +
-                "G0:" + G0.ToString() + "\n" +
-                "G1:" + G1.ToString() + "\n" +
-                "G2:" + G2.ToString() + "\n" +
-                "G3:" + G3.ToString() + "\n" +
-                "Vt300G1:" + Vt300G1.ToString() + "\n" +
-                "Vt300G2:" + Vt300G2.ToString() + "\n" +
-                "Vt300G3:" + Vt300G3.ToString() + "\n" +
-                "Vt52AlternateKeypad: " + Vt52AlternateKeypad.ToString() + "\n" + 
-                "Vt52GraphicsMode: " + Vt52GraphicsMode.ToString() + "\n" + 
-                "AutomaticNewLine:" + AutomaticNewLine.ToString() + "\n" +
-                "ConfiguredColumns:" + ConfiguredColumns.ToString() + "\n"
+                "WordWrap:" + WordWrap + "\n" +
+                "ReverseVideoMode:" + ReverseVideoMode + "\n" +
+                "OriginMode:" + OriginMode + "\n" +
+                "InsertMode:" + InsertMode + "\n" +
+                "ShowCursor:" + ShowCursor + "\n" +
+                "BlinkingCursor:" + BlinkingCursor + "\n" +
+                "CursorShape:" + CursorShape + "\n" +
+                "Utf8:" + Utf8 + "\n" +
+                "CharacterSetMode:" + CharacterSetMode + "\n" +
+                "G0:" + G0 + "\n" +
+                "G1:" + G1 + "\n" +
+                "G2:" + G2 + "\n" +
+                "G3:" + G3 + "\n" +
+                "Vt300G1:" + Vt300G1 + "\n" +
+                "Vt300G2:" + Vt300G2 + "\n" +
+                "Vt300G3:" + Vt300G3 + "\n" +
+                "Vt52AlternateKeypad: " + Vt52AlternateKeypad + "\n" +
+                "Vt52GraphicsMode: " + Vt52GraphicsMode + "\n" +
+                "AutomaticNewLine:" + AutomaticNewLine + "\n" +
+                "ConfiguredColumns:" + ConfiguredColumns + "\n"
                 ;
         }
     }

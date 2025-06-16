@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using VtNetCore.VirtualTerminal.Enums;
 
 namespace VtNetCore.VirtualTerminal.Model
@@ -28,32 +27,6 @@ namespace VtNetCore.VirtualTerminal.Model
         public TerminalColor(ETerminalColor color, bool bright)
         {
             Set(color, bright);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (this == null && obj == null)
-                return true;
-
-            if (this == null || obj == null)
-                return false;
-
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            var other = obj as TerminalColor;
-
-            return ARGB == other.ARGB;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return WebColor;
         }
 
         public static readonly Dictionary<int, TerminalColor> Iso8613 = new Dictionary<int, TerminalColor>
@@ -318,51 +291,53 @@ namespace VtNetCore.VirtualTerminal.Model
 
         public uint Red
         {
-            get
-            {
-                return (ARGB >> 16) & 0xFF;
-            }
-            set
-            {
-                ARGB = (ARGB & 0xFF00FFFF) | ((value & 0xFF) << 16);
-            }
+            get => (ARGB >> 16) & 0xFF;
+            set => ARGB = (ARGB & 0xFF00FFFF) | ((value & 0xFF) << 16);
         }
 
         public uint Green
         {
-            get
-            {
-                return (ARGB >> 8) & 0xFF;
-            }
-            set
-            {
-                ARGB = (ARGB & 0xFFFF00FF) | ((value & 0xFF) << 8);
-            }
+            get => (ARGB >> 8) & 0xFF;
+            set => ARGB = (ARGB & 0xFFFF00FF) | ((value & 0xFF) << 8);
         }
 
         public uint Blue
         {
-            get
-            {
-                return ARGB & 0xFF;
-            }
-            set
-            {
-                ARGB = (ARGB & 0xFFFFFF00) | (value & 0xFF);
-            }
+            get => ARGB & 0xFF;
+            set => ARGB = (ARGB & 0xFFFFFF00) | (value & 0xFF);
         }
 
-        public string WebColor
+        public string WebColor => string.Format("#{0:X6}", ARGB);
+
+        public override bool Equals(object obj)
         {
-            get
-            {
-                return string.Format("#{0:X6}", ARGB);
-            }
+            if (this == null && obj == null)
+                return true;
+
+            if (this == null || obj == null)
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var other = obj as TerminalColor;
+
+            return ARGB == other.ARGB;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return WebColor;
         }
 
         public void Set(int paletteIndex)
         {
-            if(Iso8613.TryGetValue(paletteIndex, out TerminalColor colorValue))
+            if (Iso8613.TryGetValue(paletteIndex, out var colorValue))
                 ARGB = colorValue.ARGB;
             else
                 ARGB = 0;
@@ -382,35 +357,35 @@ namespace VtNetCore.VirtualTerminal.Model
                 switch (termColor)
                 {
                     case ETerminalColor.Black:
-                        Set(127, 127, 127);     // Bright black
+                        Set(127, 127, 127); // Bright black
                         break;
 
                     case ETerminalColor.Red:
-                        Set(255, 0, 0);    // Bright red
+                        Set(255, 0, 0); // Bright red
                         break;
 
                     case ETerminalColor.Green:
-                        Set(0, 255, 0);    // Bright green
+                        Set(0, 255, 0); // Bright green
                         break;
 
                     case ETerminalColor.Yellow:
-                        Set(255, 255, 0);   // Bright yellow
+                        Set(255, 255, 0); // Bright yellow
                         break;
 
                     case ETerminalColor.Blue:
-                        Set(92, 92, 255);    // Bright blue
+                        Set(92, 92, 255); // Bright blue
                         break;
 
                     case ETerminalColor.Magenta:
-                        Set(255, 0, 255);   // Bright Magenta
+                        Set(255, 0, 255); // Bright Magenta
                         break;
 
                     case ETerminalColor.Cyan:
-                        Set(0, 255, 255);   // Bright cyan
+                        Set(0, 255, 255); // Bright cyan
                         break;
 
                     case ETerminalColor.White:
-                        Set(255, 255, 255);  // Bright white
+                        Set(255, 255, 255); // Bright white
                         break;
                 }
             }
@@ -419,35 +394,35 @@ namespace VtNetCore.VirtualTerminal.Model
                 switch (termColor)
                 {
                     case ETerminalColor.Black:
-                        Set(12, 12, 12);        // Black
+                        Set(12, 12, 12); // Black
                         break;
 
                     case ETerminalColor.Red:
-                        Set(197, 15, 31);      // Red
+                        Set(197, 15, 31); // Red
                         break;
 
                     case ETerminalColor.Green:
-                        Set(19, 161, 14);      // Green
+                        Set(19, 161, 14); // Green
                         break;
 
                     case ETerminalColor.Yellow:
-                        Set(193, 156, 0);    // Yellow
+                        Set(193, 156, 0); // Yellow
                         break;
 
                     case ETerminalColor.Blue:
-                        Set(0, 55, 218);      // Blue
+                        Set(0, 55, 218); // Blue
                         break;
 
                     case ETerminalColor.Magenta:
-                        Set(136, 23, 152);    // Magenta
+                        Set(136, 23, 152); // Magenta
                         break;
 
                     case ETerminalColor.Cyan:
-                        Set(97, 214, 214);    // Cyan
+                        Set(97, 214, 214); // Cyan
                         break;
 
                     case ETerminalColor.White:
-                        Set(204, 204, 204);  // White
+                        Set(204, 204, 204); // White
                         break;
                 }
             }

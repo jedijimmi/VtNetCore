@@ -1,46 +1,50 @@
-﻿namespace VtNetCore.XTermParser
-{
-    using System;
-    using System.Collections.Generic;
-    using VtNetCore.Exceptions;
-    using VtNetCore.VirtualTerminal.Enums;
-    using VtNetCore.XTermParser.SequenceType;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using VtNetCore.Exceptions;
+using VtNetCore.VirtualTerminal.Enums;
+using VtNetCore.XTermParser.SequenceType;
 
+namespace VtNetCore.XTermParser
+{
     public class XTermSequenceReader
     {
         private static TerminalSequence ConsumeCSI(XTermInputBuffer stream)
         {
             stream.PushState();
 
-            bool atStart = true;
-            bool isQuery = false;
-            bool isSend = false;
-            bool isBang = false;
+            var atStart = true;
+            var isQuery = false;
+            var isSend = false;
+            var isBang = false;
             char? modifier = null;
 
-            int currentParameter = -1;
-            List<int> Parameters = new List<int>();
-            List<TerminalSequence> ProcesFirst = new List<TerminalSequence>();
+            var currentParameter = -1;
+            var Parameters = new List<int>();
+            var ProcesFirst = new List<TerminalSequence>();
 
             while (true)
             {
                 var next = stream.Read();
 
                 if (atStart && next == '?')
+                {
                     isQuery = true;
+                }
                 else if (atStart && next == '>')
+                {
                     isSend = true;
+                }
                 else if (atStart && next == '!')
+                {
                     isBang = true;
+                }
                 else if (next == ';')
                 {
                     if (currentParameter == -1)
-                    {
                         //currentParameter = 1;       // ctrlseqs.txt seems to always default to 1 here. Might not be a great idea
                         atStart = false;
-                        //throw new EscapeSequenceException("Invalid position for ';' in CSI", stream.Stacked);
-                    }
-
+                    //throw new EscapeSequenceException("Invalid position for ';' in CSI", stream.Stacked);
                     Parameters.Add(currentParameter);
                     currentParameter = -1;
                 }
@@ -50,9 +54,9 @@
                     if (currentParameter == -1)
                         currentParameter = Convert.ToInt32(next - '0');
                     else
-                        currentParameter = (currentParameter * 10) + Convert.ToInt32(next - '0');
+                        currentParameter = currentParameter * 10 + Convert.ToInt32(next - '0');
                 }
-                else if (next == '$' || next == '"' || next == ' ' || next =='\'')
+                else if (next == '$' || next == '"' || next == ' ' || next == '\'')
                 {
                     if (modifier.HasValue)
                         throw new EscapeSequenceException("There appears to be two modifiers in a row", stream.Stacked);
@@ -94,7 +98,7 @@
                         IsQuery = isQuery,
                         IsSend = isSend,
                         IsBang = isBang,
-                        Command = (modifier.HasValue ? modifier.Value.ToString() : "") + next.ToString(),
+                        Command = (modifier.HasValue ? modifier.Value.ToString() : "") + next,
                         ProcessFirst = ProcesFirst.Count > 0 ? ProcesFirst : null
                     };
 
@@ -111,29 +115,26 @@
         {
             stream.PushState();
 
-            string command = "";
-            bool readingCommand = false;
-            bool atStart = true;
-            bool isQuery = false;
-            bool isSend = false;
-            bool isBang = false;
+            var command = "";
+            var readingCommand = false;
+            var atStart = true;
+            var isQuery = false;
+            var isSend = false;
+            var isBang = false;
             char? modifier = null;
 
-            int currentParameter = -1;
-            List<int> Parameters = new List<int>();
+            var currentParameter = -1;
+            var Parameters = new List<int>();
 
             while (true)
             {
-                if(stream.AtEnd)
-                {
-                    return  null;
-                }
+                if (stream.AtEnd) return null;
 
                 var next = stream.Read();
 
                 if (readingCommand)
                 {
-                    if (next == 0x07 || next == 0x9C)        // BEL or ST
+                    if (next == 0x07 || next == 0x9C) // BEL or ST
                     {
                         var osc = new OscSequence
                         {
@@ -150,19 +151,23 @@
 
                         return osc;
                     }
-                    else
-                    {
-                        command += next;
-                    }
+
+                    command += next;
                 }
                 else
                 {
                     if (atStart && next == '?')
+                    {
                         isQuery = true;
+                    }
                     else if (atStart && next == '>')
+                    {
                         isSend = true;
+                    }
                     else if (atStart && next == '!')
+                    {
                         isBang = true;
+                    }
                     else if (next == ';')
                     {
                         if (currentParameter == -1)
@@ -177,12 +182,13 @@
                         if (currentParameter == -1)
                             currentParameter = Convert.ToInt32(next - '0');
                         else
-                            currentParameter = (currentParameter * 10) + Convert.ToInt32(next - '0');
+                            currentParameter = currentParameter * 10 + Convert.ToInt32(next - '0');
                     }
                     else if (next == '$' || next == '"' || next == ' ')
                     {
                         if (modifier.HasValue)
-                            throw new EscapeSequenceException("There appears to be two modifiers in a row", stream.Stacked);
+                            throw new EscapeSequenceException("There appears to be two modifiers in a row",
+                                stream.Stacked);
 
                         if (currentParameter != -1)
                         {
@@ -228,7 +234,7 @@
             var next = stream.Read();
 
             ECharacterSize size;
-            switch(next)
+            switch (next)
             {
                 case '3':
                     size = ECharacterSize.DoubleHeightLineTop;
@@ -424,7 +430,7 @@
 
                     stream.Commit();
 
-                    System.Diagnostics.Debug.WriteLine(vt52mc.ToString());
+                    Debug.WriteLine(vt52mc.ToString());
                     return vt52mc;
 
                 default:
@@ -474,16 +480,16 @@
         {
             stream.PushState();
 
-            string command = "";
-            bool readingCommand = false;
-            bool atStart = true;
-            bool isQuery = false;
-            bool isSend = false;
-            bool isBang = false;
+            var command = "";
+            var readingCommand = false;
+            var atStart = true;
+            var isQuery = false;
+            var isSend = false;
+            var isBang = false;
             char? modifier = null;
 
-            int currentParameter = -1;
-            List<int> Parameters = new List<int>();
+            var currentParameter = -1;
+            var Parameters = new List<int>();
 
             while (!stream.AtEnd)
             {
@@ -491,7 +497,7 @@
 
                 if (readingCommand)
                 {
-                    if (next == 0x07 || next == 0x9C)        // BEL or ST
+                    if (next == 0x07 || next == 0x9C) // BEL or ST
                     {
                         var dcs = new DcsSequence
                         {
@@ -508,10 +514,11 @@
 
                         return dcs;
                     }
-                    else if(next == 0x1B)               // ESC
+
+                    if (next == 0x1B) // ESC
                     {
                         var stChar = stream.Read();
-                        if(stChar == '\\')
+                        if (stChar == '\\')
                         {
                             var dcs = new DcsSequence
                             {
@@ -528,22 +535,27 @@
 
                             return dcs;
                         }
-                        else
-                            throw new EscapeSequenceException("ESC \\ is needed to terminate DCS. Encounterd wrong character.", stream.Stacked);
+
+                        throw new EscapeSequenceException(
+                            "ESC \\ is needed to terminate DCS. Encounterd wrong character.", stream.Stacked);
                     }
-                    else
-                    {
-                        command += next;
-                    }
+
+                    command += next;
                 }
                 else
                 {
                     if (atStart && next == '?')
+                    {
                         isQuery = true;
+                    }
                     else if (atStart && next == '>')
+                    {
                         isSend = true;
+                    }
                     else if (atStart && next == '!')
+                    {
                         isBang = true;
+                    }
                     else if (next == ';')
                     {
                         if (currentParameter == -1)
@@ -558,12 +570,13 @@
                         if (currentParameter == -1)
                             currentParameter = Convert.ToInt32(next - '0');
                         else
-                            currentParameter = (currentParameter * 10) + Convert.ToInt32(next - '0');
+                            currentParameter = currentParameter * 10 + Convert.ToInt32(next - '0');
                     }
                     else if (next == '$' || next == '"' || next == ' ')
                     {
                         if (modifier.HasValue)
-                            throw new EscapeSequenceException("There appears to be two modifiers in a row", stream.Stacked);
+                            throw new EscapeSequenceException("There appears to be two modifiers in a row",
+                                stream.Stacked);
 
                         if (currentParameter != -1)
                         {
@@ -599,23 +612,20 @@
             TerminalSequence sequence = null;
             switch (next)
             {
-                case '\u001b':      // ESC
+                case '\u001b': // ESC
                     sequence = ConsumeEscapeSequence(stream);
                     break;
 
-                case '\u008e':      // SS2
+                case '\u008e': // SS2
                     sequence = ConsumeSS2Sequence(stream);
                     break;
 
-                case '\u008f':      // SS3
+                case '\u008f': // SS3
                     sequence = ConsumeSS3Sequence(stream);
                     break;
 
-                case '\u0090':      // DCS
+                case '\u0090': // DCS
                     sequence = ConsumeDeviceControlStringSequence(stream);
-                    break;
-
-                default:
                     break;
             }
 

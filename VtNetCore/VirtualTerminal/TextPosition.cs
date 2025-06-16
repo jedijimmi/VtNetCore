@@ -1,13 +1,9 @@
-﻿namespace VtNetCore.VirtualTerminal
-{
-    using System;
+﻿using System;
 
+namespace VtNetCore.VirtualTerminal
+{
     public class TextPosition : IEquatable<TextPosition>
     {
-        public int Column { get; set; }
-
-        public int Row { get; set; }
-
         public TextPosition()
         {
         }
@@ -20,6 +16,20 @@
         public TextPosition(TextPosition other)
         {
             Set(other);
+        }
+
+        public int Column { get; set; }
+
+        public int Row { get; set; }
+
+        public bool IsValid => Row == -1;
+
+        public bool Equals(TextPosition other)
+        {
+            if (other != null)
+                return this == other;
+
+            return false;
         }
 
         public void Set(TextPosition other)
@@ -43,24 +53,22 @@
             };
         }
 
-        public bool IsValid { get { return Row == -1; } }
-
-        public static bool operator > (TextPosition left, TextPosition right)
+        public static bool operator >(TextPosition left, TextPosition right)
         {
             return left.Row > right.Row || (left.Row == right.Row && left.Column > right.Column);
         }
 
-        public static bool operator >= (TextPosition left, TextPosition right)
+        public static bool operator >=(TextPosition left, TextPosition right)
         {
             return left.Row > right.Row || (left.Row == right.Row && left.Column >= right.Column);
         }
 
-        public static bool operator < (TextPosition left, TextPosition right)
+        public static bool operator <(TextPosition left, TextPosition right)
         {
             return right.Row > left.Row || (right.Row == left.Row && right.Column > left.Column);
         }
 
-        public static bool operator <= (TextPosition left, TextPosition right)
+        public static bool operator <=(TextPosition left, TextPosition right)
         {
             return right.Row > left.Row || (right.Row == left.Row && right.Column >= left.Column);
         }
@@ -104,18 +112,10 @@
             return Column == column && Row == row;
         }
 
-        public bool Equals(TextPosition other)
-        {
-            if (other != null)
-                return this == other;
-
-            return false;
-        }
-
         public override bool Equals(object obj)
         {
             if (obj != null && obj is TextPosition)
-                return this == (obj as TextPosition);
+                return this == obj as TextPosition;
 
             return false;
         }
@@ -125,7 +125,7 @@
             return base.GetHashCode();
         }
 
-        public static bool operator == (TextPosition left, TextPosition right)
+        public static bool operator ==(TextPosition left, TextPosition right)
         {
             if (ReferenceEquals(left, right))
                 return true;
@@ -148,7 +148,7 @@
 
         public override string ToString()
         {
-            return "(c:" + Column.ToString() + ",r:" + Row.ToString() + ")";
+            return "(c:" + Column + ",r:" + Row + ")";
         }
     }
 }

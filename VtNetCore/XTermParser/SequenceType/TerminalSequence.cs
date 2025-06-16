@@ -1,8 +1,8 @@
-﻿namespace VtNetCore.XTermParser.SequenceType
-{
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
+namespace VtNetCore.XTermParser.SequenceType
+{
     public class TerminalSequence
     {
         public List<int> Parameters { get; set; }
@@ -19,11 +19,12 @@
                 (IsQuery ? "?," : "") +
                 (IsSend ? ">," : "") +
                 (IsBang ? "!," : "") +
-                ((Parameters != null && Parameters.Count > 0) ?
-                    "[" + string.Join(",", Parameters.Select(x => x.ToString())) + "]" : ""
+                (Parameters != null && Parameters.Count > 0
+                    ? "[" + string.Join(",", Parameters.Select(x => x.ToString())) + "]"
+                    : ""
                 ) +
                 "'" + Command + "'" +
-                "(" + string.Join(".",Command.Select(x => ((int)x).ToString("X2"))) + ")" + 
+                "(" + string.Join(".", Command.Select(x => ((int)x).ToString("X2"))) + ")" +
                 ")";
         }
     }
